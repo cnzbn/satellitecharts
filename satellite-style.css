@@ -80,17 +80,25 @@
   }
 
 
-  .numberCircle {
+  .cerchio {
+    position:relative;
+    display: inline-block;
+    vertical-align: sub;
     border-radius: 50%;
-    width: 36px;
+    width:36px;
     height: 36px;
-    padding-left: 0.3em;
-    padding-right: 0.3em;
     background: #F8F8F8;
+  }
+
+  .numberCircle {
    text-align: center;
     font-family: Supreme-Bold, Arial, sans-serif;
     color:black;
-    font-size: 1em !important;
+    font-size: 1.8em;
+    left:0;
+    position: absolute; 
+    width: 100%;
+   
     
 }
 
@@ -424,7 +432,7 @@ font-family: 'Supreme-Regular', Arial, Helvetica, sans-serif;
   border: 1px solid white;
     background-color: black;
   position: fixed;
-  right: 4em; bottom: 4em;
+  right: 4vw; bottom: 4vw;
   padding-left: 0.8em;
   padding-right: 0.8em;
   padding-top:0.3em;
