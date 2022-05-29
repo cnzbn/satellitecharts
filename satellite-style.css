@@ -2,70 +2,89 @@
 /** fonts **/
 
 @font-face {
-    font-family: 'Supreme-Regular';
-    src: url('fonts/Supreme-Regular.woff2') format('woff2'),
-         url('fonts/Supreme-Regular.woff') format('woff'),
-         url('fonts/Supreme-Regular.ttf') format('truetype');
-         font-weight: 400;
-         font-display: swap;
-         font-style: normal;
-  }
-  
+  font-family: 'Supreme-Regular';
+  src: url('fonts/Supreme-Regular.woff2') format('woff2'),
+       url('fonts/Supreme-Regular.woff') format('woff'),
+       url('fonts/Supreme-Regular.ttf') format('truetype');
+       font-weight: 400;
+       font-display: swap;
+       font-style: normal;
+}
 
-  @font-face {
-    font-family: 'Supreme-Italic';
-    src: url('fonts/Supreme-Italic.woff2') format('woff2'),
-         url('fonts/Supreme-Italic.woff') format('woff'),
-         url('fonts/Supreme-Italic.ttf') format('truetype');
-         font-weight: 400;
-         font-display: swap;
-         font-style: italic;
-  }
 
 @font-face {
-    font-family: 'Supreme-Medium';
-    src: url('fonts/Supreme-Medium.woff2') format('woff2'),
-         url('fonts/Supreme-Medium.woff') format('woff'),
-         url('fonts/Supreme-Medium.ttf') format('truetype');
-         font-weight: 500;
-         font-display: swap;
-         font-style: normal;
-  }
+  font-family: 'Supreme-Regular';
+  src: url('fonts/Supreme-Italic.woff2') format('woff2'),
+       url('fonts/Supreme-Italic.woff') format('woff'),
+       url('fonts/Supreme-Italic.ttf') format('truetype');
+       font-weight: 400;
+       font-display: swap;
+       font-style: italic;
+}
 
-  @font-face {
-    font-family: 'Supreme-Bold';
-    src: url('fonts/Supreme-Extrabold.woff2') format('woff2'),
-         url('fonts/Supreme-Extrabold.woff') format('woff'),
-         url('fonts/Supreme-Extrabold.ttf') format('truetype');
-         font-weight: 700;
-         font-display: swap;
-         font-style: normal;
-  }
+@font-face {
+  font-family: 'Supreme-Regular';
+  src: url('fonts/Supreme-Medium.woff2') format('woff2'),
+       url('fonts/Supreme-Medium.woff') format('woff'),
+       url('fonts/Supreme-Medium.ttf') format('truetype');
+       font-weight: 500;
+       font-display: swap;
+       font-style: normal;
+}
+
+@font-face {
+  font-family: 'Supreme-Regular';
+  src: url('fonts/Supreme-Extrabold.woff2') format('woff2'),
+       url('fonts/Supreme-Extrabold.woff') format('woff'),
+       url('fonts/Supreme-Extrabold.ttf') format('truetype');
+       font-weight: 800;
+       font-display: swap;
+       font-style: normal;
+}
+
+
 
   /** fonts styles **/
-  .title {font-family: Supreme-Regular, Arial, sans-serif;
+
+
+
+  .title {
+    font-family: Supreme-Regular, Arial, sans-serif;
+    font-weight: 400;
+    font-style: normal;
     color: #F8F8F8;
     font-size: 3em;
   }
 
-  .body-text {font-family: Supreme-Regular, Arial, sans-serif;
+  .body-text {
+    font-family: Supreme-Regular, Arial, sans-serif;
+    font-weight: 400;
+    font-style: normal;
     color: #F8F8F8;
     font-size: 1.2em;
   }
 
-  .body-text-bold {font-family: Supreme-Bold, Arial, sans-serif;
+  .body-text-bold {
+    font-family: Supreme-Regular, Arial, sans-serif;
+    font-weight: 800;
+    font-style: normal;
     color: #F8F8F8;
     font-size: 1.1em;
   }
 
   
-  .caption {font-family: Supreme-Regular, Arial, sans-serif;
+  .caption {
+    font-family: Supreme-Regular, Arial, sans-serif;
+    font-weight: 400;
+    font-style: normal;
     color: grey;
     font-size: 1em;
   }
 
   .subtitle {
     font-family: Supreme-Regular, Arial, sans-serif;
+    font-weight: 400;
+    font-style: normal;
     color: #F8F8F8;
     font-size: 1.8em;
     margin-block-start: 0.2em;
@@ -79,7 +98,6 @@
     display: inline-block;
   }
 
-
   .cerchio {
     position:relative;
     display: inline-block;
@@ -92,7 +110,8 @@
 
   .numberCircle {
    text-align: center;
-    font-family: Supreme-Bold, Arial, sans-serif;
+    font-family: Supreme-Regular, Arial, sans-serif;
+    font-weight: 800;
     color:black;
     font-size: 1.8em;
     left:0;
@@ -104,7 +123,13 @@
 
 /* CONTROL MOUSE HOVER ON SVG TEXT */
 
+  tspan { 
+    font-family: Supreme-Regular, Arial, sans-serif; 
+    
+  }
+
      text a:link {
+      
       color: white!important;
       fill:white;
       text-decoration: none;
@@ -429,10 +454,10 @@ font-family: 'Supreme-Regular', Arial, Helvetica, sans-serif;
 
 #arrow-top{
   border-radius: 200px;
+  background-color: black;
   border: 1px solid white;
-    background-color: black;
   position: fixed;
-  right: 2vw; bottom: 2vw;
+  right: 4vw; bottom: 4vw;
   padding-left: 0.8em;
   padding-right: 0.8em;
   padding-top:0.3em;
