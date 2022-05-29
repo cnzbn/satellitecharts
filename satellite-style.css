@@ -422,6 +422,7 @@ font-family: 'Supreme-Regular', Arial, Helvetica, sans-serif;
 #arrow-top{
   border-radius: 200px;
   border: 1px solid white;
+    background-color: black;
   position: fixed;
   right: 4em; bottom: 4em;
   padding-left: 0.8em;
