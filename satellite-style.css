@@ -288,7 +288,7 @@ scrollbar-width: none;  /* Firefox */
   width: 100%;
   text-align: left;
   float: left;
-  padding: 0.5em;
+  padding-right: 0.5em;
 }
 
 @media screen and (min-width: 768px) {
@@ -296,7 +296,7 @@ scrollbar-width: none;  /* Firefox */
     width: 32%;
     text-align: left;
     float: left;
-    padding: 0.3em;
+    padding-right: 0.3em;
   }
 }
 
