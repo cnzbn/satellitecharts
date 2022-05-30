@@ -414,6 +414,7 @@ scrollbar-width: none;  /* Firefox */
   width:4935px;
   height: 1852px; 
   overflow-x:scroll;
+  overflow-y:hidden;
 }
 
 @media screen and (min-width: 768px) {
@@ -421,6 +422,7 @@ scrollbar-width: none;  /* Firefox */
     width:9870px;
     height: 3704px; 
     overflow-x:scroll;
+    overflow-y:hidden;
    
   }
 }
