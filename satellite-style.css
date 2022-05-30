@@ -286,25 +286,25 @@
 /* CHART (two columns) SCALING FOR VIEWPORT */
 
 .svg-chart-resize-left svg {
-  width:119px;
+  width:auto;
    height:1150px;
 }
 
 @media screen and (min-width: 768px) {
 .svg-chart-resize-left svg{
-  width:239px;
+  width:auto;
    height:3100px;
 }
 }
 
 .svg-chart-resize-right svg {
-  width:4433px;
+  width:auto;
    height:1150px;
 }
 
 @media screen and (min-width: 768px) {
 .svg-chart-resize-right svg{
-  width:8865px;
+  width:auto;
    height:3100px;
 }
 }
