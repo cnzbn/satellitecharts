@@ -408,39 +408,6 @@ scrollbar-width: none;  /* Firefox */
 }
 
 
-/* CHART SCALING FOR VIEWPORT */
-
-.svg-chart-full {
-  width:4935px;
-  height: 1852px; 
-  overflow-x:scroll;
-  overflow-y:hidden;
-}
-
-@media screen and (min-width: 768px) {
-  .svg-chart-full {
-    width:9870px;
-    height: 3704px; 
-    overflow-x:scroll;
-    overflow-y:hidden;
-   
-  }
-}
-
-
-.svg-chart-two {
-  width:4432px;
-   height:1150px;
-   overflow-x: scroll;
-}
-
-@media screen and (min-width: 768px) {
-.svg-chart-two {
-  width:8865px;
-   height:3100px;
-  overflow-x: scroll;
-}
-}
 
 
 
