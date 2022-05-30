@@ -283,6 +283,16 @@
 }
 
 
+.top-row {
+    position: sticky;
+    position: -webkit-sticky;
+    top:0px!important;
+    z-index:8;
+  }
+
+
+
+
 /* CHART (two columns) SCALING FOR VIEWPORT */
 
 .svg-chart-resize-left svg {
