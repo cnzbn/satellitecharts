@@ -256,10 +256,63 @@
 
 
   
+/* CHART-VIEW: TWO COLUMNS */
+
+.column {
+  float: left;
+}
+
+.left {
+  width:10%;
+  z-index: 10;
+  position: sticky;
+  position: -webkit-sticky;
+  left:0px;
+}
+
+.right {
+  width:90%;
+  overflow-x: scroll;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;  
+}
+
+
+/* CHART (two columns) SCALING FOR VIEWPORT */
+
+.svg-chart-resize-left svg {
+  width:119px;
+   height:1150px;
+}
+
+@media screen and (min-width: 768px) {
+.svg-chart-resize-left svg{
+  width:239px;
+   height:3100px;
+}
+}
+
+.svg-chart-resize-right svg {
+  width:4433px;
+   height:1150px;
+}
+
+@media screen and (min-width: 768px) {
+.svg-chart-resize-right svg{
+  width:8865px;
+   height:3100px;
+}
+}
+
+
+
 
   
-
-
 
 
 
@@ -289,6 +342,10 @@
   }
 }
 
+
+
+
+
 /* LAYOUT THREE COLUMNS */
 
 .column-3 {
@@ -307,7 +364,7 @@
   }
 }
 
-/* TEXT-VIEW CHART: ONE COLUMN for the research */
+/* TEXT-VIEW: ONE COLUMN for the research */
 
 .one-column-text-view {
   width: 100%;
@@ -351,7 +408,7 @@ gap: 10px;
 
 
 
-/* ELEMETNS CONTAINER */
+/* ELEMENTS CONTAINER */
 .container-box {
   padding-left:4%;
   padding-right:4%;
@@ -414,7 +471,6 @@ scrollbar-width: none;  /* Firefox */
   width:4935px;
   height: 1852px; 
   overflow-x:scroll;
-  overflow-y:hidden;
 }
 
 @media screen and (min-width: 768px) {
@@ -422,62 +478,11 @@ scrollbar-width: none;  /* Firefox */
     width:9870px;
     height: 3704px; 
     overflow-x:scroll;
-    overflow-y:hidden;
    
   }
 }
 
 
-.svg-chart-two {
-  width:4432px;
-   height:1150px;
-   overflow-x: scroll;
-}
-
-@media screen and (min-width: 768px) {
-.svg-chart-two {
-  width:8865px;
-   height:3100px;
-  overflow-x: scroll;
-}
-}
 
 
-
-  /* CHART-VIEW: TWO COLUMNS */
-
-  .column {
-    float: left;
-   
-  }
-  
-  .left {
-    width:10%;
-    z-index: 10;
-    position: sticky;
-    position: -webkit-sticky;
-    left:0px;
-  
-  }
-  
-  .right {
-    width:90%;
-    overflow-x: scroll;
-  
-  }
-  
-  /* Clear floats after the columns */
-  .row:after {
-    content: "";
-    display: table;
-    clear: both;  
-  }
-  
-  .top-row {
-    position: sticky;
-    position: -webkit-sticky;
-    top:0px!important;
-    z-index:8;
-  }
-  
   
