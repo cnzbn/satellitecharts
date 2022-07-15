@@ -1,0 +1,229 @@
+
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="UTF-8"/>
+        <title>Kepler.gl embedded map</title>
+
+        <!--Uber Font-->
+        <link rel="stylesheet" href="https://d1a3f4spazzrp4.cloudfront.net/kepler.gl/uber-fonts/4.0.0/superfine.css">
+
+        <!--MapBox css-->
+        <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.css" rel="stylesheet">
+
+        <!-— facebook open graph tags -->
+        <meta property="og:url" content="http://kepler.gl/" />
+        <meta property="og:title" content="Large-scale WebGL-powered Geospatial Data Visualization Tool" />
+        <meta property="og:description" content="Kepler.gl is a powerful web-based geospatial data analysis tool. Built on a high performance rendering engine and designed for large-scale data sets." />
+        <meta property="og:site_name" content="kepler.gl" />
+        <meta property="og:image" content="https://d1a3f4spazzrp4.cloudfront.net/kepler.gl/kepler.gl-meta-tag.png" />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="800" />
+        <meta property="og:image:height" content="800" />
+
+        <!-— twitter card tags -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@uber">
+        <meta name="twitter:creator" content="@uber">
+        <meta name="twitter:title" content="Large-scale WebGL-powered Geospatial Data Visualization Tool">
+        <meta name="twitter:description" content="Kepler.gl is a powerful web-based geospatial data analysis tool. Built on a high performance rendering engine and designed for large-scale data sets.">
+        <meta name="twitter:image" content="https://d1a3f4spazzrp4.cloudfront.net/kepler.gl/kepler.gl-meta-tag.png" />
+
+        <!-- Load React/Redux -->
+        <script src="https://unpkg.com/react@16.8.4/umd/react.production.min.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@16.8.4/umd/react-dom.production.min.js" crossorigin></script>
+        <script src="https://unpkg.com/redux@3.7.2/dist/redux.js" crossorigin></script>
+        <script src="https://unpkg.com/react-redux@7.1.3/dist/react-redux.min.js" crossorigin></script>
+        <script src="https://unpkg.com/styled-components@4.1.3/dist/styled-components.min.js" crossorigin></script>
+
+        <!-- Load Kepler.gl -->
+        <script src="https://unpkg.com/kepler.gl@2.5.5/umd/keplergl.min.js" crossorigin></script>
+
+        <style type="text/css">
+          body {margin: 0; padding: 0; overflow: hidden;}
+        </style>
+
+        <!--MapBox token-->
+        <script>
+          /**
+           * Provide your MapBox Token
+           **/
+          const MAPBOX_TOKEN = 'pk.eyJ1IjoidWNmLW1hcGJveCIsImEiOiJjbDBiYzlveHgwdnF0M2NtZzUzZWZuNWZ4In0.l9J8ptz3MKwaU9I4PtCcig';
+          const WARNING_MESSAGE = 'Please Provide a Mapbox Token in order to use Kepler.gl. Edit this file and fill out MAPBOX_TOKEN with your access key';
+        </script>
+
+        <!-- GA: Delete this as you wish, However to pat ourselves on the back, we only track anonymous pageview to understand how many people are using kepler.gl. -->
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+          ga('create', 'UA-64694404-19', {
+            'storage': 'none',
+            'clientId': localStorage.getItem('ga:clientId')
+          });
+          ga(function(tracker) {
+              localStorage.setItem('ga:clientId', tracker.get('clientId'));
+          });
+          ga('set', 'checkProtocolTask', null); // Disable file protocol checking.
+          ga('set', 'checkStorageTask', null); // Disable cookie storage checking.
+          ga('set', 'historyImportTask', null); // Disable history checking (requires reading from cookies).
+          ga('set', 'page', 'keplergl-html');
+          ga('send', 'pageview');
+        </script>
+      </head>
+      <body>
+        <!-- We will put our React component inside this div. -->
+        <div id="app">
+          <!-- Kepler.gl map will be placed here-->
+        </div>
+
+        <!-- Load our React component. -->
+        <script>
+          /* Validate Mapbox Token */
+          if ((MAPBOX_TOKEN || '') === '' || MAPBOX_TOKEN === 'PROVIDE_MAPBOX_TOKEN') {
+            alert(WARNING_MESSAGE);
+          }
+
+          /** STORE **/
+          const reducers = (function createReducers(redux, keplerGl) {
+            return redux.combineReducers({
+              // mount keplerGl reducer
+              keplerGl: keplerGl.keplerGlReducer.initialState({
+                uiState: {
+                  readOnly: true,
+                  currentModal: null
+                }
+              })
+            });
+          }(Redux, KeplerGl));
+
+          const middleWares = (function createMiddlewares(keplerGl) {
+            return keplerGl.enhanceReduxMiddleware([
+              // Add other middlewares here
+            ]);
+          }(KeplerGl));
+
+          const enhancers = (function craeteEnhancers(redux, middles) {
+            return redux.applyMiddleware(...middles);
+          }(Redux, middleWares));
+
+          const store = (function createStore(redux, enhancers) {
+            const initialState = {};
+
+            return redux.createStore(
+              reducers,
+              initialState,
+              redux.compose(enhancers)
+            );
+          }(Redux, enhancers));
+          /** END STORE **/
+
+          /** COMPONENTS **/
+          var KeplerElement = (function makeKeplerElement(react, keplerGl, mapboxToken) {
+            var LogoSvg = function LogoSvg() {
+              return react.createElement(
+                "div",
+                { className: "logo-container", style: {position: 'fixed', zIndex: 10000, padding: '4px'} },
+                  react.createElement(
+                    "svg",
+                    {
+                      className: "kepler_gl__logo",
+                      width: "107px",
+                      height: "21px",
+                      viewBox: "0 0 124 24"
+                    },
+                    react.createElement(
+                      "g",
+                      { transform: "translate(13.500000, 13.500000) rotate(45.000000) translate(-13.500000, -13.500000) translate(4.000000, 4.000000)" },
+                      react.createElement("rect", { x: "0", y: "6", transform: "matrix(2.535181e-06 1 -1 2.535181e-06 18.1107 6.0369)", fill: "#535C6C", width: "12.1", height: "12.1" }),
+                      react.createElement("rect", { x: "6", y: "0", transform: "matrix(2.535182e-06 1 -1 2.535182e-06 18.1107 -6.0369)", fill:"#1FBAD6", width: "12.1", height: "12.1" })
+                    ),
+                    react.createElement(
+                      "g",
+                      {},
+                      react.createElement("path", { fill:"#1FBAD6", d: "M39,8.7h2.2l-2.8,4.2l2.9,5.1H39l-2.4-4.2h-1.3V18h-2V5l2-0.1v7.3h1.3L39,8.7z" }),
+                      react.createElement("path", { fill:"#1FBAD6", d: "M42.4,13.3c0-1.5,0.4-2.7,1.1-3.5s1.8-1.2,3.1-1.2c1.3,0,2.2,0.4,2.8,1.1c0.6,0.7,0.9,1.8,0.9,3.3 c0,0.4,0,0.8,0,1.1h-5.8c0,1.6,0.8,2.4,2.4,2.4c1,0,2-0.2,2.9-0.6l0.2,1.7c-0.4,0.2-0.9,0.4-1.4,0.5s-1.1,0.2-1.7,0.2 c-1.5,0-2.6-0.4-3.3-1.2C42.8,16.1,42.4,14.9,42.4,13.3z M46.6,10.1c-0.7,0-1.2,0.2-1.5,0.5c-0.4,0.4-0.6,0.9-0.6,1.7h4 c0-0.8-0.2-1.4-0.5-1.7S47.2,10.1,46.6,10.1z" }),
+                      react.createElement("path", { fill:"#1FBAD6", d: "M57.1,18.2c-1,0-1.8-0.3-2.3-0.9l0,0l0,1.3v2.5h-2V8.7h1.5l0.3,0.9h0c0.3-0.3,0.7-0.6,1.2-0.7 c0.4-0.2,0.9-0.3,1.4-0.3c1.2,0,2.1,0.4,2.7,1.1c0.6,0.7,0.9,2,0.9,3.7c0,1.6-0.3,2.8-1,3.7C59.2,17.8,58.3,18.2,57.1,18.2z M56.7,10.3c-0.4,0-0.8,0.1-1.1,0.2c-0.3,0.2-0.6,0.4-0.8,0.7v4.3c0.2,0.3,0.4,0.5,0.7,0.7c0.3,0.2,0.7,0.3,1.1,0.3 c0.7,0,1.2-0.2,1.6-0.7c0.4-0.5,0.5-1.3,0.5-2.5c0-0.8-0.1-1.4-0.2-1.8s-0.4-0.7-0.7-0.9C57.6,10.4,57.2,10.3,56.7,10.3z" }),
+                      react.createElement("path", { fill:"#1FBAD6", d: "M63.2,16V5l2-0.1v10.8c0,0.3,0.1,0.5,0.2,0.6c0.1,0.1,0.3,0.2,0.6,0.2c0.3,0,0.6,0,0.9-0.1V18 c-0.4,0.1-1,0.2-1.6,0.2c-0.8,0-1.3-0.2-1.7-0.5S63.2,16.8,63.2,16z" }),
+                      react.createElement("path", { fill:"#1FBAD6", d: "M68.2,13.3c0-1.5,0.4-2.7,1.1-3.5c0.7-0.8,1.8-1.2,3.1-1.2c1.3,0,2.2,0.4,2.8,1.1c0.6,0.7,0.9,1.8,0.9,3.3 c0,0.4,0,0.8,0,1.1h-5.8c0,1.6,0.8,2.4,2.4,2.4c1,0,2-0.2,2.9-0.6l0.2,1.7c-0.4,0.2-0.9,0.4-1.4,0.5s-1.1,0.2-1.7,0.2 c-1.5,0-2.6-0.4-3.3-1.2C68.6,16.1,68.2,14.9,68.2,13.3z M72.4,10.1c-0.7,0-1.2,0.2-1.5,0.5c-0.4,0.4-0.6,0.9-0.6,1.7h4 c0-0.8-0.2-1.4-0.5-1.7S73,10.1,72.4,10.1z" }),
+                      react.createElement("path", { fill:"#1FBAD6", d: "M80.2,8.7l0.1,1.7h0c0.3-0.6,0.7-1.1,1.1-1.4c0.4-0.3,1-0.5,1.6-0.5c0.4,0,0.7,0,1,0.1l-0.1,2 c-0.3-0.1-0.7-0.2-1-0.2c-0.7,0-1.3,0.3-1.7,0.8c-0.4,0.5-0.7,1.2-0.7,2.1V18h-2V8.7H80.2z" }),
+                      react.createElement("path", { fill:"#1FBAD6", d: "M83.8,17c0-0.8,0.4-1.2,1.2-1.2c0.8,0,1.2,0.4,1.2,1.2c0,0.8-0.4,1.1-1.2,1.1C84.2,18.2,83.8,17.8,83.8,17z" }),
+                      react.createElement("path", { fill:"#1FBAD6", d: "M88.5,18.7c0-0.8,0.4-1.4,1.2-1.8c-0.6-0.3-0.9-0.8-0.9-1.5c0-0.7,0.4-1.2,1.1-1.6c-0.3-0.3-0.6-0.6-0.7-0.9 c-0.2-0.4-0.2-0.8-0.2-1.3c0-1,0.3-1.8,0.9-2.3c0.6-0.5,1.6-0.8,2.8-0.8c0.5,0,1,0,1.4,0.1c0.4,0.1,0.8,0.2,1.1,0.4l2.4-0.2v1.5 h-1.5c0.2,0.4,0.2,0.8,0.2,1.3c0,1-0.3,1.7-0.9,2.2s-1.5,0.8-2.7,0.8c-0.7,0-1.2-0.1-1.6-0.2c-0.1,0.1-0.2,0.2-0.3,0.3 c-0.1,0.1-0.1,0.2-0.1,0.4c0,0.2,0.1,0.3,0.2,0.4c0.1,0.1,0.3,0.2,0.6,0.2l2.7,0.2c1,0.1,1.7,0.3,2.2,0.6c0.5,0.3,0.8,0.9,0.8,1.7 c0,0.6-0.2,1.1-0.5,1.5c-0.4,0.4-0.9,0.8-1.5,1c-0.7,0.2-1.5,0.4-2.4,0.4c-1.3,0-2.3-0.2-3-0.6C88.8,20.1,88.5,19.5,88.5,18.7z M95.1,18.4c0-0.3-0.1-0.5-0.3-0.7s-0.6-0.2-1.1-0.3l-2.7-0.3c-0.2,0.1-0.4,0.3-0.5,0.5c-0.1,0.2-0.2,0.4-0.2,0.6 c0,0.4,0.2,0.8,0.5,1c0.4,0.2,1,0.3,1.8,0.3C94.2,19.5,95.1,19.2,95.1,18.4z M94.3,11.5c0-0.6-0.1-1-0.4-1.2 c-0.3-0.2-0.7-0.3-1.3-0.3c-0.7,0-1.1,0.1-1.4,0.3c-0.3,0.2-0.4,0.6-0.4,1.2s0.1,1,0.4,1.2c0.3,0.2,0.7,0.3,1.4,0.3 c0.6,0,1.1-0.1,1.3-0.4S94.3,12,94.3,11.5z" }),
+                      react.createElement("path", { fill:"#1FBAD6", d: "M99.4,16V5l2-0.1v10.8c0,0.3,0.1,0.5,0.2,0.6c0.1,0.1,0.3,0.2,0.6,0.2c0.3,0,0.6,0,0.9-0.1V18 c-0.4,0.1-1,0.2-1.6,0.2c-0.8,0-1.3-0.2-1.7-0.5S99.4,16.8,99.4,16z" })
+                    )
+                  )
+                );
+              };
+
+            return function App() {
+              var rootElm = react.useRef(null);
+              var _useState = react.useState({
+                width: window.innerWidth,
+                height: window.innerHeight
+              });
+              var windowDimension = _useState[0];
+              var setDimension = _useState[1];
+              react.useEffect(function sideEffect(){
+                function handleResize() {
+                  setDimension({width: window.innerWidth, height: window.innerHeight});
+                };
+                window.addEventListener('resize', handleResize);
+                return function() {window.removeEventListener('resize', handleResize);};
+              }, []);
+              return react.createElement(
+                'div',
+                {style: {position: 'absolute', left: 0, width: '100vw', height: '100vh'}},
+                LogoSvg(),
+                react.createElement(keplerGl.KeplerGl, {
+                  mapboxApiAccessToken: mapboxToken,
+                  id: "map",
+                  width: windowDimension.width,
+                  height: windowDimension.height
+                })
+              )
+            }
+          }(React, KeplerGl, MAPBOX_TOKEN));
+
+          const app = (function createReactReduxProvider(react, reactRedux, KeplerElement) {
+            return react.createElement(
+              reactRedux.Provider,
+              {store},
+              react.createElement(KeplerElement, null)
+            )
+          }(React, ReactRedux, KeplerElement));
+          /** END COMPONENTS **/
+
+          /** Render **/
+          (function render(react, reactDOM, app) {
+            reactDOM.render(app, document.getElementById('app'));
+          }(React, ReactDOM, app));
+        </script>
+        <!-- The next script will show how to interact directly with Kepler map store -->
+        <script>
+          /**
+           * Customize map.
+           * In the following section you can use the store object to dispatch Kepler.gl actions
+           * to add new data and customize behavior
+           */
+          (function customize(keplerGl, store) {
+            const datasets = [{"version":"v1","data":{"id":"fo5ggnr3o","label":"LAUNCH_SITE_Satellite_Catalogue_06Mar - Launch Sites - data (2).csv","color":[143,47,191],"allData":[["Base Aerea de Gando","BASE AEREA DE GANDO","Base Aerea de Gando","Gran Canaria, Spain","Europe","Spanish Air Force",1997,1,27.9359807,-15.3750059,"ACTIVE"],["Cape Canaveral Space Force Station","CAPE CANAVERAL SPACE FORCE STATION","Air Force Eastern Test Range","Cape Canaveral, Florida, USA","America","United States Space Force",1949,1746,28.4886723,-80.5728241,"ACTIVE"],["Guiana Space Centre","GUIANA SPACE CENTRE","Europe's Spaceport ","Kourou, French Guiana","America","ESA, CNES",1964,660,5.263251,-52.792406,"ACTIVE"],["Hammaguira Space Track Range","HAMMAGUIRA SPACE TRACK RANGE",null,"Hammaguir, Algeria","Africa","France",1947,4,30.8832839,-3.0375914,"NO"],["Jiuquan Satellite Launch Center","JIUQUAN SATELLITE LAUNCH CENTER","Dongfeng Aerospace City","Ejin, Alxa, Inner Mongolia, China","Eastern Asia","China National Space Administration",1958,254,40.960054,100.294969,"ACTIVE"],["John F. Kennedy Space Center","JOHN F. KENNEDY SPACE CENTER","Air Force Eastern Test Range","Merritt Island, Florida, USA","America","NASA",1962,1746,28.5728722,-80.6489808,"ACTIVE"],["Kapustin Yar Missile and Space Complex","KAPUSTIN YAR MISSILE AND SPACE COMPLEX",null,"Kapustin Yar, Soviet Union/Russia","Europe","Russian Aerospace Forces",1946,91,45.729444,48.665556,"NO"],["Kodiak Launch Complex","KODIAK LAUNCH COMPLEX","Pacific Spaceport Complex","Kodiak Island, Alaska, USA","America","Alaska Aerospace Corporation",1998,16,57.4353084,-152.3395783,"ACTIVE"],["Luigi Broglio Space Center (San Marco)","LUIGI BROGLIO SPACE CENTER (SAN MARCO)",null,"Ngomeni, Kenya","Africa","Italian Space Agency",1964,9,-2.9957377,40.194845,"ACTIVE"],["Naro Space Center","NARO SPACE CENTER",null,"Outer Naro Island, South Korea","Eastern Asia","Korean Aerospace Research Institute",2009,1,34.4417301,127.5341107,"ACTIVE"],["Palmachim Airbase","PALMACHIM AIRBASE","Yavne Airbase","Central District, Israel, Israel","Western Asia","Israeli Air Force, Israel Space Agency",1970,9,31.89777778,34.69055556,"ACTIVE"],["Pegasus launched from Eastern Range Air Space","PEGASUS LAUNCHED FROM EASTERN RANGE AIR SPACE","Cape Canaveral Space Force Station","Cape Canaveral, Florida, USA","America","United States Space Force",1993,38,28.467066,-80.566036,"ACTIVE"],["Pegasus launched from Western Range Air Space","PEGASUS LAUNCHED FROM WESTERN RANGE AIR SPACE","Vandenberg Space Force Base","Vandenberg, California, USA","America","United States Space Force",1958,36,-80.565162,28.46682,"ACTIVE"],["Plesetsk Missile and Space Complex","PLESETSK MISSILE AND SPACE COMPLEX",null,"Mirny, Arkhangelsk Oblast, Russia","Europe","Russian Space Agency",1957,2147,62.9278549,40.5748409,"ACTIVE"],["Reagan Test Site","REAGAN TEST SITE",null,"Kwajalein Atoll, Republic of the Marshall Islands","Oceania","NASA, ARPA",1962,4,8.716667,167.733333,"NO"],["Rocket Lab Launch Complex","ROCKET LAB LAUNCH COMPLEX",null,"Māhia Peninsula, New Zealand","Oceania","Rocket Lab Space Company",2016,105,-39.2604408,177.8661956,"ACTIVE"],["Satish Dhawan Space Centre","SATISH DHAWAN SPACE CENTRE",null,"Sriharikota Island, Andhra Pradesh, India","Southern Asia","Indian Space Research Organisation ",1971,421,13.7258653,80.2265545,"ACTIVE"],["Sea Launch (Odyssey Platform)","SEA LAUNCH (ODYSSEY PLATFORM)",null,"Long Beach, California, USA","America","Seven Space company",1995,33,33.754185,-118.216458,"NO"],["Semnan Space Center","SEMNAN SPACE CENTER","Imam Khomeini Spaceport","Semnan province, Iran","Western Asia","Iranian Space Agency",2004,4,35.2387536,53.9495762,"ACTIVE"],["Shahroud Space Center","SHAHROUD SPACE CENTER",null,"Shahroud, Semnan province, Iran","Western Asia","Islamic Revolutionary Guard Corps Aerospace Force",1980,1,36.2007478,55.3338493,"ACTIVE"],["Sohae Satellite Launching Station","SOHAE SATELLITE LAUNCHING STATION","Yunsong Launch Site ","Tongch'ang-ri, North Pyongan Province, North Korea","Eastern Asia","Korean Committee of Space Technology",1990,2,39.6600743,124.7050429,"ACTIVE"],["Submarine Launch from Barents Sea","SUBMARINE LAUNCH FROM BARENTS SEA","Barents Sea Launch Area","Barents Sea, Russia","Europe","Russian Navy",1965,3,74.9883921,37.1063683,"UNKNOWN"],["Svobodny Cosmodrome","SVOBODNY COSMODROME",null,"Svobodny, Russia","Europe","Russian Space Agency",1997,5,51.709281,127.9736256,"NO"],["Taiyuan Satellite Launch Center","TAIYUAN SATELLITE LAUNCH CENTER",null,"Kelan, Xinzhou, Shanxi province, China","Eastern Asia","China National Space Administration",1968,179,38.8485775,111.607983,"ACTIVE"],["Tanegashima Space Center","TANEGASHIMA SPACE CENTER",null,"Kagoshima, Kukinaga, Japan","Eastern Asia","Japan Aerospace Exploration Agency",1966,142,30.374865,130.9576461,"ACTIVE"],["Tyuratam Missile and Space Complex","TYURATAM MISSILE AND SPACE COMPLEX","Baikonur Cosmodrome","Kazakhstan (leased to Russia)","Europe","Roscosmos, Russian Aerospace Forces",1955,2287,45.9645851,63.3052427,"ACTIVE"],["Uchinoura Space Center","UCHINOURA SPACE CENTER","Kagoshima Space Center","Kimotsuki, Tokyo, Japan","Eastern Asia","Japan Aerospace Exploration Agency",1962,45,31.2512669,131.0761271,"ACTIVE"],["Vandenberg Space Force Base","VANDENBERG SPACE FORCE BASE","Air Force Western Test Range","Vandenberg, California, USA","America","United States Space Force",1958,1225,34.7420267,-120.5724404,"ACTIVE"],["Vostochny Cosmodrome","VOSTOCHNY COSMODROME",null,"Tsiolkovsky, Amur Oblast, Russia","Europe","Roscosmos",2011,279,51.8500694,128.3553044,"ACTIVE"],["Wallops Flight Facility","WALLOPS FLIGHT FACILITY",null,"Wallop Island, Virginia, USA","America","Goddard Space Flight Center, NASA",1945,142,37.8339343,-75.4877606,"ACTIVE"],["Wenchang Satellite Launch Center","WENCHANG SATELLITE LAUNCH CENTER","Xichang Satellite Space Center","Wenchang, Hainan Island, China","Eastern Asia","China National Space Administration",2014,24,19.614354,110.951057,"ACTIVE"],["Woomera Range Complex","WOOMERA RANGE COMPLEX",null,"Wirraminna, Australia","Oceania","Royal Australian Air Force",1946,2,-30.9448063,136.5306269,"ACTIVE"],["Xichang Satellite Launch Center","XICHANG SATELLITE LAUNCH CENTER",null,"Xichang, Sichuan, China","Eastern Asia","China National Space Administration",1984,213,28.2469746,102.0283611,"ACTIVE"],["Yasny Launch Base","YASNY LAUNCH BASE","Orenburg / Yasny cosmodrome","Yasny, Orenburg Oblast, Russia","Europe","Russian Air Force",2006,89,51.0943657,59.8424006,"UNKNOWN"],["Yellow Sea Launch Area","YELLOW SEA LAUNCH AREA",null,"Yellow Sea, Shandong Province, China","Eastern Asia","China National Space Administration",1982,9,31.4314809,122.3107517,"ACTIVE"]],"fields":[{"name":"SITE NAME","type":"string","format":"","analyzerType":"STRING"},{"name":"NAME UPPERCASE","type":"string","format":"","analyzerType":"STRING"},{"name":"SPACE COMPLEX","type":"string","format":"","analyzerType":"STRING"},{"name":"LOCATION","type":"string","format":"","analyzerType":"STRING"},{"name":"CONTINENT","type":"string","format":"","analyzerType":"STRING"},{"name":"OPERATED BY","type":"string","format":"","analyzerType":"STRING"},{"name":"BUILT IN","type":"integer","format":"","analyzerType":"INT"},{"name":"SATELLITE LAUNCHES","type":"integer","format":"","analyzerType":"INT"},{"name":"LATITUDE","type":"real","format":"","analyzerType":"FLOAT"},{"name":"LONGITUDE","type":"real","format":"","analyzerType":"FLOAT"},{"name":"STATUS","type":"string","format":"","analyzerType":"STRING"}]}}];
+            const config = {"version":"v1","config":{"visState":{"filters":[],"layers":[{"id":"xna05ha","type":"point","config":{"dataId":"fo5ggnr3o","label":"Launch Site","color":[227,26,26],"highlightColor":[252,242,26,255],"columns":{"lat":"LATITUDE","lng":"LONGITUDE","altitude":null},"isVisible":true,"visConfig":{"radius":10,"fixedRadius":false,"opacity":0.8,"outline":false,"thickness":2,"strokeColor":null,"colorRange":{"name":"Global Warming","type":"sequential","category":"Uber","colors":["#5A1846","#900C3F","#C70039","#E3611C","#F1920E","#FFC300"]},"strokeColorRange":{"name":"Global Warming","type":"sequential","category":"Uber","colors":["#5A1846","#900C3F","#C70039","#E3611C","#F1920E","#FFC300"]},"radiusRange":[20,200],"filled":true},"hidden":false,"textLabel":[{"field":{"name":"SITE NAME","type":"string"},"color":[255,255,255],"size":18,"offset":[0,0],"anchor":"start","alignment":"center"}]},"visualChannels":{"colorField":null,"colorScale":"quantile","strokeColorField":null,"strokeColorScale":"quantile","sizeField":{"name":"SATELLITE LAUNCHES","type":"integer"},"sizeScale":"sqrt"}}],"interactionConfig":{"tooltip":{"fieldsToShow":{"fo5ggnr3o":[{"name":"SITE NAME","format":null},{"name":"LOCATION","format":null},{"name":"STATUS","format":null},{"name":"OPERATED BY","format":null},{"name":"BUILT IN","format":null},{"name":"SATELLITE LAUNCHES","format":null},{"name":"LATITUDE","format":null},{"name":"LONGITUDE","format":null}]},"compareMode":false,"compareType":"absolute","enabled":true},"brush":{"size":0.5,"enabled":false},"geocoder":{"enabled":false},"coordinate":{"enabled":false}},"layerBlending":"normal","splitMaps":[],"animationConfig":{"currentTime":null,"speed":1}},"mapState":{"bearing":0,"dragRotate":false,"latitude":1.0772408640531852,"longitude":4.4237553243412036,"pitch":0,"zoom":2.1763051442708727,"isSplit":false},"mapStyle":{"styleType":"satellite","topLayerGroups":{},"visibleLayerGroups":{},"threeDBuildingColor":[3.7245996603793508,6.518049405663864,13.036098811327728],"mapStyles":{}}}};
+
+            const loadedData = keplerGl.KeplerGlSchema.load(
+              datasets,
+              config
+            );
+
+            store.dispatch(keplerGl.addDataToMap({
+              datasets: loadedData.datasets,
+              config: loadedData.config,
+              options: {
+                centerMap: false
+              }
+            }));
+          }(KeplerGl, store))
+        </script>
+      </body>
+    </html>
+  

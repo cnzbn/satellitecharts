@@ -54,6 +54,8 @@
     font-style: normal;
     color: #F8F8F8;
     font-size: 3em;
+    margin-block-start: 0 em;
+    margin-block-end: 0 em;
   }
 
   .body-text {
@@ -89,6 +91,15 @@
     color: grey;
     font-size: 1em;
   }
+
+  .caption-lightgrey {
+    font-family: Supreme-Regular, Arial, sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: rgb(189, 189, 189);
+    font-size: 1em;
+  }
+
 
   .subtitle {
     font-family: Supreme-Regular, Arial, sans-serif;
@@ -126,9 +137,51 @@
     left:0;
     position: absolute; 
     width: 100%;
-   
     
 }
+
+.button {
+  border: 1px solid white;
+  padding: 0.5em;
+  background-color: black;
+  font-family: Supreme-Regular, Arial, sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #F8F8F8;
+    font-size: 1.2em;
+    cursor: pointer;
+    
+}
+
+button:link {
+      
+  color: white!important;
+  fill:white;
+  text-decoration: none;
+ }
+
+ button:visited {
+   color: white!important;
+   fill:white;
+   text-decoration: none;
+ }
+
+ button:focus {
+   color: white;
+   text-decoration: none;
+ }
+
+ button:hover {
+  color:black!important;
+  background-color:yellow;
+  text-decoration: none;
+  
+ }
+
+ text a:active {
+  color: white;
+  text-decoration: none;
+ }
 
 /* CONTROL MOUSE HOVER ON SVG TEXT */
 
@@ -350,7 +403,33 @@ gap: 10px;
 
 
 
+/* MAP: TWO COLUMNS */
 
+  
+  .column-2 {
+  width: 100%;
+  display: inline-block;
+  }
+  
+  @media screen and (min-width: 768px) {
+    .column-2 {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+#grid-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  padding-right:4%;
+  }
+  
+
+
+
+  
 /* ELEMETNS CONTAINER */
 .container-box {
   padding-left:4%;
@@ -386,7 +465,7 @@ gap: 10px;
   background-color: black;
   border: 1px solid white;
   position: fixed;
-  right: 4vw; bottom: 4vw;
+  right: 4vw; bottom: 3vw;
   padding-left: 0.8em;
   padding-right: 0.8em;
   padding-top:0.3em;
@@ -448,3 +527,5 @@ scrollbar-width: none;  /* Firefox */
   }
   
   
+
+
