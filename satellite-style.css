@@ -356,9 +356,30 @@ button:link {
     width: 32%;
     text-align: left;
     float: left;
-    padding-right: 0.3em;
+    padding-right: 0.5em;
   }
 }
+
+
+
+/* LAYOUT FOUR COLUMNS */
+
+.column-4 {
+  width: 100%;
+  text-align: left;
+  float: left;
+  padding-right: 0.5em;
+}
+
+@media screen and (min-width: 768px) {
+  .column-4 {
+    width: 24%;
+    text-align: left;
+    float: left;
+    padding-right: 0.5em;
+  }
+}
+
 
 /* TEXT-VIEW CHART: ONE COLUMN for the research */
 
@@ -526,6 +547,14 @@ scrollbar-width: none;  /* Firefox */
     z-index:8;
   }
   
-  
+
+    /* GANTT CHART */
 
 
+
+  .myBox {
+    border: none;
+    width: 100%;
+    height: 800px;
+    overflow-y: scroll;
+    }
