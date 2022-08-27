@@ -373,6 +373,15 @@ button:link {
 
 @media screen and (min-width: 768px) {
   .column-4 {
+    width: 48%;
+    text-align: left;
+    float: left;
+    padding-right: 0.5em;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .column-4 {
     width: 24%;
     text-align: left;
     float: left;
